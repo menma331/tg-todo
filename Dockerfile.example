@@ -1,0 +1,14 @@
+FROM python:3.11
+
+WORKDIR /src
+# Сюда токен бота
+ENV BOT_TOKEN=""
+
+# Копируем файл зависимостей и устанавливаем их
+COPY src/requirements.txt .
+RUN pip3 install -r requirements.txt
+
+# Копируем весь проект, включая базу данных и main.py
+COPY src/ .
+
+ENTRYPOINT ["python3", "main.py"]
