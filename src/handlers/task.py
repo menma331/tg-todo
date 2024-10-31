@@ -187,10 +187,11 @@ async def handle_task_navigation(callback: CallbackQuery):
     # Получаем текущий номер задачи из состояния
     current_task_number = fsm.get_data(telegram_id, key="current_task_number") or 1
 
+    task_id = tasks[current_task_number - 1]["id"]
+
     if callback.data == "delete_task":
         fsm.set_data(telegram_id, key="current_task_number", value=current_task_number)
         fsm.set_data(telegram_id, key="last_task_number", value=last_task_number)
-        task_id = tasks[current_task_number - 1]["id"]
         fsm.set_data(telegram_id, key="task_id_to_delete", value=task_id)
         task_title = tasks[current_task_number - 1]['title']
 
@@ -202,6 +203,14 @@ async def handle_task_navigation(callback: CallbackQuery):
         await callback.answer()
         return
 
+    if callback.data == "task_completed":
+        # Обновляем статус задачи
+        TaskDAO.mark_task_as_completed(telegram_id=telegram_id, task_id=task_id)
+        fsm.set_data(telegram_id, key="current_task_number", value=current_task_number)
+        fsm.set_data(telegram_id, key="last_task_number", value=last_task_number)
+        await callback.message.answer(text=task_responses.TASK_SUCCESSFULLY_COMPLETED, reply_markup=get_menu_markup())
+        await callback.answer()
+        return
     # Обновляем сообщение с новой задачей и клавиатурой
     task_title = tasks[current_task_number - 1]['title']
     task_description = tasks[current_task_number - 1]['description']
