@@ -2,7 +2,7 @@
 
 ### Developer: Roman Sysa (Сыса Роман)
 
-<img src="readme/logo_tg_bot.jpg" width=800 height=680>
+<img src="readme/logo_tg_bot.jpg" width=720 height=680>
 
 ---
 
